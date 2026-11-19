@@ -27,7 +27,7 @@
 
 ### 1. Clone the Repository:
 ```bash
-git clone https://github.com/yuvrajsinghbhatiya/Edumart
+git clone https://github.com/yvrjbhatiya/Edumart
 cd edumart
 ```
 
