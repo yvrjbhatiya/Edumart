@@ -33,7 +33,6 @@ export const ProductCard = ({
   const navigate = useNavigate();
   const wishlistItems = useSelector(selectWishlistItems);
   const loggedInUser = useSelector(selectLoggedInUser);
-  console.log(loggedInUser);
   const cartItems = useSelector(selectCartItems);
   const dispatch = useDispatch();
   const theme = useTheme();

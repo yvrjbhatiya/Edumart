@@ -61,16 +61,17 @@ exports.login=async(req,res)=>{
             const token=generateToken(secureInfo)
 
             // sending jwt token in the response cookies
-            res.cookie('token',token,{
-                sameSite:process.env.PRODUCTION==='true'?"None":'Lax',
-                maxAge:new Date(Date.now() + (parseInt(process.env.COOKIE_EXPIRATION_DAYS * 24 * 60 * 60 * 1000))),
-                httpOnly:true,
-                secure:process.env.PRODUCTION==='true'?true:false
-            })
+            res.cookie('token', token, {
+                sameSite: process.env.PRODUCTION === 'true' ? 'None' : 'Lax',
+                maxAge: new Date(Date.now() + (parseInt(process.env.COOKIE_EXPIRATION_DAYS * 24 * 60 * 60 * 1000))),
+                httpOnly: true,
+                secure: process.env.PRODUCTION === 'true' ? true : false
+              });
+              console.log(req.user, "user  1");
             return res.status(200).json(sanitizeUser(existingUser))
         }
-
-        res.clearCookie('token');
+        console.log(req.user, "user2");
+        // res.clearCookie('token');
         return res.status(404).json({message:"Invalid Credentails"})
     } catch (error) {
         console.log(error);
@@ -248,6 +249,7 @@ exports.logout=async(req,res)=>{
 
 exports.checkAuth=async(req,res)=>{
     try {
+        console.log(req.user,"user");
         if(req.user){
             const user=await User.findById(req.user._id)
             return res.status(200).json(sanitizeUser(user))

@@ -80,6 +80,8 @@ export const ProductList = () => {
   const products = useSelector(selectProducts);
   const totalResults = useSelector(selectProductTotalResults);
   const loggedInUser = useSelector(selectLoggedInUser);
+  console.log(loggedInUser);
+  
 
   const productFetchStatus = useSelector(selectProductFetchStatus);
 
