@@ -1,4 +1,5 @@
 import {
+  Button,
   Divider,
   FormControl,
   Grid,
@@ -13,7 +14,6 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import {
   fetchProductsAsync,
   resetProductFetchStatus,
@@ -28,6 +28,7 @@ import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AddIcon from "@mui/icons-material/Add";
+import TuneIcon from "@mui/icons-material/Tune";
 import { selectBrands } from "../../brands/BrandSlice";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -69,8 +70,6 @@ export const ProductList = () => {
   const [sort, setSort] = useState(null);
   const theme = useTheme();
 
-  const is1200 = useMediaQuery(theme.breakpoints.down(1200));
-  const is800 = useMediaQuery(theme.breakpoints.down(800));
   const is700 = useMediaQuery(theme.breakpoints.down(700));
   const is600 = useMediaQuery(theme.breakpoints.down(600));
   const is500 = useMediaQuery(theme.breakpoints.down(500));
@@ -81,7 +80,6 @@ export const ProductList = () => {
   const products = useSelector(selectProducts);
   const totalResults = useSelector(selectProductTotalResults);
   const loggedInUser = useSelector(selectLoggedInUser);
-  
 
   const productFetchStatus = useSelector(selectProductFetchStatus);
 
@@ -94,7 +92,6 @@ export const ProductList = () => {
   const isProductFilterOpen = useSelector(selectProductIsFilterOpen);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleBrandFilters = (e) => {
     const filterSet = new Set(filters.brand);
@@ -147,10 +144,6 @@ export const ProductList = () => {
   }, [dispatch, filters, loggedInUser?.isAdmin, page, sort]);
 
   const handleAddRemoveFromWishlist = (e, productId) => {
-    if (!loggedInUser) {
-      navigate("/login");
-      return;
-    }
     if (e.target.checked) {
       const data = { user: loggedInUser?._id, product: productId };
       dispatch(createWishlistItemAsync(data));
@@ -201,16 +194,14 @@ export const ProductList = () => {
       dispatch(resetWishlistItemDeleteStatus());
       dispatch(resetCartItemAddStatus());
     };
-  }, []);
+  }, [dispatch]);
 
-  const handleFilterClose = () => {
+  const handleFilterToggle = () => {
     dispatch(toggleFilters());
   };
 
   return (
     <>
-      {/* filters side bar */}
-
       {productFetchStatus === "pending" ? (
         <Stack
           width={is500 ? "35vh" : "25rem"}
@@ -223,28 +214,32 @@ export const ProductList = () => {
         </Stack>
       ) : (
         <>
+          {/* Filters sidebar */}
           <motion.div
             style={{
               position: "fixed",
+              top: 0,
               backgroundColor: "white",
               height: "100vh",
               padding: "1rem",
               overflowY: "scroll",
               width: is500 ? "100vw" : "30rem",
-              zIndex: 500,
+              zIndex: 1200,
+              boxShadow: isProductFilterOpen
+                ? "4px 0 20px rgba(0,0,0,0.12)"
+                : "none",
             }}
             variants={{ show: { left: 0 }, hide: { left: -500 } }}
             initial={"hide"}
-            transition={{ ease: "easeInOut", duration: 0.7, type: "spring" }}
+            transition={{ ease: "easeInOut", duration: 0.5, type: "spring" }}
             animate={isProductFilterOpen === true ? "show" : "hide"}
           >
-            {/* fitlers section */}
             <Stack
               mb={"5rem"}
               sx={{ scrollBehavior: "smooth", overflowY: "scroll" }}
             >
               <IconButton
-                onClick={handleFilterClose}
+                onClick={handleFilterToggle}
                 style={{ position: "absolute", top: 15, right: 15 }}
               >
                 <motion.div
@@ -277,13 +272,14 @@ export const ProductList = () => {
                     <FormGroup onChange={handleBrandFilters}>
                       {brands?.map((brand) => (
                         <motion.div
+                          key={brand._id}
                           style={{ width: "fit-content" }}
                           whileHover={{ x: 5 }}
                           whileTap={{ scale: 0.9 }}
                         >
                           <FormControlLabel
                             sx={{ ml: 1 }}
-                            control={<Checkbox whileHover={{ scale: 1.1 }} />}
+                            control={<Checkbox />}
                             label={brand.name}
                             value={brand._id}
                           />
@@ -306,8 +302,8 @@ export const ProductList = () => {
                 <Accordion>
                   <AccordionSummary
                     expandIcon={<AddIcon />}
-                    aria-controls="brand-filters"
-                    id="brand-filters"
+                    aria-controls="category-filters"
+                    id="category-filters"
                   >
                     <Typography>Category</Typography>
                   </AccordionSummary>
@@ -316,13 +312,14 @@ export const ProductList = () => {
                     <FormGroup onChange={handleCategoryFilters}>
                       {categories?.map((category) => (
                         <motion.div
+                          key={category._id}
                           style={{ width: "fit-content" }}
                           whileHover={{ x: 5 }}
                           whileTap={{ scale: 0.9 }}
                         >
                           <FormControlLabel
                             sx={{ ml: 1 }}
-                            control={<Checkbox whileHover={{ scale: 1.1 }} />}
+                            control={<Checkbox />}
                             label={category.name}
                             value={category._id}
                           />
@@ -341,7 +338,7 @@ export const ProductList = () => {
               <Stack
                 sx={{
                   width: "100%",
-                  margin : "1rem 0",
+                  margin: "1rem 0",
                   justifyContent: "center",
                   alignItems: "center",
                 }}
@@ -350,21 +347,44 @@ export const ProductList = () => {
               </Stack>
             )}
 
-          
-
             <Divider />
 
             {/* products */}
-            <Stack rowGap={7} mt={is600 ? 2 : 0} id="products-section">
-              {/* sort options */}
+            <Stack rowGap={5} mt={is600 ? 2 : 3} id="products-section">
+              {/* Filter & Sort toolbar above products */}
               <Stack
                 flexDirection={"row"}
-                mr={"2rem"}
-                justifyContent={"flex-end"}
+                mx={is488 ? 2 : 4}
+                justifyContent={"space-between"}
                 alignItems={"center"}
-                columnGap={5}
+                columnGap={2}
               >
-                <Stack alignSelf={"flex-end"} width={"12rem"}>
+                {!loggedInUser?.isAdmin ? (
+                  <Button
+                    variant="outlined"
+                    startIcon={<TuneIcon />}
+                    onClick={handleFilterToggle}
+                    sx={{
+                      textTransform: "none",
+                      borderRadius: "8px",
+                      borderColor: "#6a89a7",
+                      color: "#384959",
+                      px: 2,
+                      py: 0.8,
+                      fontWeight: 500,
+                      "&:hover": {
+                        borderColor: "#384959",
+                        backgroundColor: "#f5f5f5",
+                      },
+                    }}
+                  >
+                    Filters
+                  </Button>
+                ) : (
+                  <span />
+                )}
+
+                <Stack width={"12rem"}>
                   <FormControl fullWidth>
                     <InputLabel id="sort-dropdown">Sort</InputLabel>
                     <Select
@@ -374,11 +394,9 @@ export const ProductList = () => {
                       onChange={(e) => setSort(e.target.value)}
                       value={sort}
                     >
-                      <MenuItem bgcolor="text.secondary" value={null}>
-                        Reset
-                      </MenuItem>
+                      <MenuItem value={null}>Reset</MenuItem>
                       {sortOptions.map((option) => (
-                        <MenuItem key={option} value={option}>
+                        <MenuItem key={option.name} value={option}>
                           {option.name}
                         </MenuItem>
                       ))}
@@ -387,11 +405,8 @@ export const ProductList = () => {
                 </Stack>
               </Stack>
 
-
-
               {/* product grid */}
               <Grid
-              
                 gap={is700 ? 2 : 2}
                 container
                 justifyContent={"center"}
