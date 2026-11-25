@@ -118,7 +118,7 @@ export const CartItem = ({
         rowGap={"1rem"}
         alignItems={"flex-end"}
       >
-        <Typography variant="body2" sx={{ color: theme.palette.primary.dark }}>${price}</Typography>
+        <Typography variant="body2" sx={{ color: theme.palette.primary.dark }}>₹{price}</Typography>
         <Button
           size={is480 ? "small" : ""}
           onClick={handleProductRemove}

@@ -27,6 +27,7 @@ import { LoadingButton } from "@mui/lab";
 import { useForm } from "react-hook-form";
 import { selectLoggedInUser } from "../../auth/AuthSlice";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import CreateIcon from "@mui/icons-material/Create";
 import { MotionConfig, motion } from "framer-motion";
 import { useTheme } from "@mui/material";
@@ -34,6 +35,7 @@ import CloseIcon from "@mui/icons-material/Close";
 
 export const Reviews = ({ productId, averageRating }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const reviews = useSelector(selectReviews);
   const [value, setValue] = useState(1);
   const {
@@ -263,7 +265,13 @@ export const Reviews = ({ productId, averageRating }) => {
           </Stack>
         ) : !loggedInUser?.isAdmin ? (
           <motion.div
-            onClick={() => setWriteReview(!writeReview)}
+            onClick={() => {
+              if (!loggedInUser) {
+                navigate("/login");
+                return;
+              }
+              setWriteReview(!writeReview);
+            }}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 1 }}
             style={{ width: "fit-content" }}

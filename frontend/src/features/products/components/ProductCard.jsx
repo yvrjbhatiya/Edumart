@@ -51,6 +51,10 @@ export const ProductCard = ({
 
   const handleAddToCart = async (e) => {
     e.stopPropagation();
+    if (!loggedInUser) {
+      navigate("/login");
+      return;
+    }
     const data = { user: loggedInUser?._id, product: id };
     dispatch(addToCartAsync(data));
   };
@@ -67,7 +71,7 @@ export const ProductCard = ({
           onClick={() => navigate(`/product-details/${id}`)}
           sx={{
             cursor: "pointer",
-            borderRadius: "1rem",
+            
           }}
         >
           {/* Image Section */}
@@ -78,8 +82,8 @@ export const ProductCard = ({
                 aspectRatio: 1 / 1,
                 objectFit: "contain",
                 height: "fit-content",
-                borderRadius: "1rem",
-                boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+                
+                boxShadow: "rgba(0, 0, 0, 0.15) 0px 5px 15px 0px",
               }}
               src={thumbnail}
               alt={`${title} photo unavailable`}
@@ -133,7 +137,7 @@ export const ProductCard = ({
                 fontWeight={600}
                 sx={{ color: theme.palette.primary.dark }}
               >
-                ${price}
+                ₹{price}
               </Typography>
               {!isWishlistCard &&
                 loggedInUser?.isAdmin === false &&
@@ -142,7 +146,6 @@ export const ProductCard = ({
                   style={{
                     padding: "10px 15px",
                     border: "2px solid #6a89a7", 
-                    borderRadius: "1rem",
                     cursor: "not-allowed",
                     fontSize: is408 ? ".9rem" : ".8rem",
                     textAlign: "center",
@@ -158,7 +161,6 @@ export const ProductCard = ({
                     style={{
                       padding: "10px 15px",
                       backgroundColor: "#6a89a7",
-                      borderRadius: "1rem",
                       outline: "none",
                       border: "none",
                       cursor: "pointer",

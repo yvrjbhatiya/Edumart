@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import {
   fetchProductsAsync,
   resetProductFetchStatus,
@@ -80,7 +81,6 @@ export const ProductList = () => {
   const products = useSelector(selectProducts);
   const totalResults = useSelector(selectProductTotalResults);
   const loggedInUser = useSelector(selectLoggedInUser);
-  console.log(loggedInUser);
   
 
   const productFetchStatus = useSelector(selectProductFetchStatus);
@@ -94,6 +94,7 @@ export const ProductList = () => {
   const isProductFilterOpen = useSelector(selectProductIsFilterOpen);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleBrandFilters = (e) => {
     const filterSet = new Set(filters.brand);
@@ -146,6 +147,10 @@ export const ProductList = () => {
   }, [dispatch, filters, loggedInUser?.isAdmin, page, sort]);
 
   const handleAddRemoveFromWishlist = (e, productId) => {
+    if (!loggedInUser) {
+      navigate("/login");
+      return;
+    }
     if (e.target.checked) {
       const data = { user: loggedInUser?._id, product: productId };
       dispatch(createWishlistItemAsync(data));

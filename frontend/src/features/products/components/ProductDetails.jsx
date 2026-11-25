@@ -157,6 +157,10 @@ export const ProductDetails = () => {
   }, []);
 
   const handleAddToCart = () => {
+    if (!loggedInUser) {
+      navigate("/login");
+      return;
+    }
     const item = { user: loggedInUser._id, product: id, quantity };
     dispatch(addToCartAsync(item));
     setQuantity(1);
@@ -175,6 +179,10 @@ export const ProductDetails = () => {
   };
 
   const handleAddRemoveFromWishlist = (e) => {
+    if (!loggedInUser) {
+      navigate("/login");
+      return;
+    }
     if (e.target.checked) {
       const data = { user: loggedInUser?._id, product: id };
       dispatch(createWishlistItemAsync(data));
@@ -302,7 +310,7 @@ export const ProductDetails = () => {
                       variant="h5"
                       sx={{ color: theme.palette.primary.dark }}
                     >
-                      ${product?.price}
+                      ₹{product?.price}
                     </Typography>
                   </Stack>
 

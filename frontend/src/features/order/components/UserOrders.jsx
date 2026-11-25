@@ -169,7 +169,7 @@ export const UserOrders = () => {
 
                       <Stack>
                         <Typography>Total Amount</Typography>
-                        <Typography>${order.total}</Typography>
+                        <Typography>₹{order.total}</Typography>
                       </Stack>
                     </Stack>
 
@@ -227,7 +227,7 @@ export const UserOrders = () => {
                                 Qty: {product.quantity}
                               </Typography>
                             </Stack>
-                            <Typography>${product.product.price}</Typography>
+                            <Typography>₹{product.product.price}</Typography>
                           </Stack>
 
                           <Typography color={"text.secondary"}>
