@@ -70,8 +70,7 @@ export const ProductCard = ({
           width={is408 ? "auto" : is488 ? "200px" : is752 ? "300px" : "340px"}
           onClick={() => navigate(`/product-details/${id}`)}
           sx={{
-            cursor: "pointer",
-            
+            cursor: "pointer",          
           }}
         >
           {/* Image Section */}
@@ -83,7 +82,7 @@ export const ProductCard = ({
                 objectFit: "contain",
                 height: "fit-content",
                 
-                boxShadow: "rgba(0, 0, 0, 0.15) 0px 5px 15px 0px",
+                
               }}
               src={thumbnail}
               alt={`${title} photo unavailable`}

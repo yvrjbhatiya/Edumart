@@ -121,20 +121,26 @@ export const Reviews = ({ productId, averageRating }) => {
 
   return (
     <Stack
-
-      width={is480 ? "100%" : is840 ? "25rem" : "40rem"}
+      width={{ xs: "100%", sm: is840 ? "100%" : "40rem" }}
       maxWidth="100%"
+      sx={{ minWidth: 0 }}
     >
       {/* Header row: Reviews on left, Write a review button on right */}
       <Stack
         direction="row"
         justifyContent="space-between"
         alignItems="center"
-        spacing={2}
+        spacing={{ xs: 1, sm: 2 }}
+        sx={{
+          pb: 1.5,
+          borderBottom: "1px solid",
+          borderColor: "divider",
+          minWidth: 0,
+        }}
       >
         <Typography
           variant={is480 ? "h5" : "h4"}
-          fontWeight={600}
+          fontWeight={700}
           sx={{ color: "#384959", lineHeight: 1.2 }}
         >
           Reviews
@@ -145,25 +151,16 @@ export const Reviews = ({ productId, averageRating }) => {
             disableElevation
             size="small"
             variant="outlined"
+            color="primary"
             startIcon={<CreateIcon fontSize="small" />}
             onClick={handleOpenWriteReview}
             sx={{
-              textTransform: "none",
-              fontWeight: 500,
-              fontSize: is480 ? "0.8rem" : "0.9rem",
-              borderRadius: "8px",
-              px: 1.75,
+              fontSize: { xs: "0.78rem", sm: "0.88rem" },
+              px: { xs: 1.25, sm: 1.75 },
               py: 0.75,
-              borderColor: "#6a89a7",
-              color: "#384959",
-              backgroundColor: "#ffffff",
+              backgroundColor: "background.paper",
               whiteSpace: "nowrap",
               flexShrink: 0,
-              "&:hover": {
-                backgroundColor: "#6a89a7",
-                color: "#ffffff",
-                borderColor: "#6a89a7",
-              },
             }}
           >
             Write a review
@@ -173,19 +170,19 @@ export const Reviews = ({ productId, averageRating }) => {
 
       {/* Rating summary & breakdown */}
       {reviews?.length ? (
-        <Stack rowGap={3}>
-          <Stack rowGap={1}>
-            <Typography variant="h2" fontWeight={800}>
+        <Stack rowGap={{ xs: 2, sm: 3 }}>
+          <Stack rowGap={0.75}>
+            <Typography variant="h2" fontWeight={800} color="primary.dark">
               {averageRating}.0
             </Typography>
-            <Rating readOnly value={averageRating} />
+            <Rating readOnly value={averageRating} size={is480 ? "small" : "medium"} />
             <Typography variant="h6" color="text.secondary">
               Based on {reviews.length}{" "}
               {reviews.length === 1 ? "Review" : "Reviews"}
             </Typography>
           </Stack>
 
-          <Stack >
+          <Stack rowGap={{ xs: 1.25, sm: 1.75 }}>
             {[5, 4, 3, 2, 1].map((number) => {
               const percentage = parseInt(
                 (ratingCounts[number] / reviews.length) * 100
@@ -196,17 +193,34 @@ export const Reviews = ({ productId, averageRating }) => {
                   direction="row"
                   justifyContent="space-between"
                   alignItems="center"
-                  columnGap={1.5}
+                  columnGap={{ xs: 1, sm: 1.5 }}
+                  sx={{ minWidth: 0 }}
                 >
-                  <Typography sx={{ whiteSpace: "nowrap" }}>
+                  <Typography
+                    variant="body2"
+                    color="text.primary"
+                    sx={{ whiteSpace: "nowrap", minWidth: { xs: "3.1rem", sm: "3.5rem" } }}
+                  >
                     {number} star
                   </Typography>
                   <LinearProgress
-                    sx={{ width: "100%", height: "0.85rem", borderRadius: "4px" }}
+                    color="primary"
+                    sx={{
+                      flex: 1,
+                      minWidth: 0,
+                      height: { xs: "0.65rem", sm: "0.8rem" },
+                    }}
                     variant="determinate"
                     value={percentage}
                   />
-                  <Typography sx={{ minWidth: "2.5rem", textAlign: "right" }}>
+                  <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{
+                      minWidth: { xs: "2.2rem", sm: "2.6rem" },
+                      textAlign: "right",
+                    }}
+                  >
                     {percentage}%
                   </Typography>
                 </Stack>
@@ -215,7 +229,7 @@ export const Reviews = ({ productId, averageRating }) => {
           </Stack>
         </Stack>
       ) : (
-        <Typography variant="h8" color="text.secondary" fontWeight={400}>
+        <Typography variant="body1" color="text.secondary" fontWeight={400}>
           {loggedInUser?.isAdmin
             ? "There are no reviews currently"
             : "Be the one to post review first"}
@@ -225,15 +239,17 @@ export const Reviews = ({ productId, averageRating }) => {
       {/* Write review form */}
       {writeReview && (
         <Stack
-          rowGap={2.5}
           component="form"
           noValidate
           onSubmit={handleSubmit(handleAddReview)}
           sx={{
-            backgroundColor: "#ffffff",
-            p: 2,
-            borderRadius: "8px",
-            border: "1px solid #e0e0e0",
+            backgroundColor: "background.default",
+            p: { xs: 1.5, sm: 2.5 },
+            borderRadius: "12px",
+            border: "1px solid",
+            borderColor: "divider",
+            width: "100%",
+            minWidth: 0,
           }}
         >
           <TextField
@@ -242,13 +258,13 @@ export const Reviews = ({ productId, averageRating }) => {
             error={Boolean(errors.comment)}
             helperText={errors.comment ? "Please enter a review comment" : ""}
             multiline
-            rows={5}
+            rows={is480 ? 4 : 5}
             fullWidth
             placeholder="Write a review..."
           />
 
           <Stack>
-            <Typography gutterBottom variant="body2">
+            <Typography gutterBottom variant="body2" color="text.secondary">
               How much did you like the product?
             </Typography>
             <motion.div
@@ -257,7 +273,7 @@ export const Reviews = ({ productId, averageRating }) => {
               whileTap={{ scale: 1 }}
             >
               <Rating
-                size="large"
+                size={is480 ? "medium" : "large"}
                 value={value}
                 onChange={(_, newValue) => setValue(newValue || 1)}
               />
@@ -266,28 +282,31 @@ export const Reviews = ({ productId, averageRating }) => {
 
           <Stack
             direction="row"
-            justifyContent="flex-end"
+            justifyContent={{ xs: "stretch", sm: "flex-end" }}
             alignItems="center"
-            columnGap={1}
+            gap={1}
+            flexWrap="wrap"
           >
             <MotionConfig whileTap={{ scale: 1 }} whileHover={{ scale: 1.03 }}>
-              <motion.div>
+              <motion.div style={{ flex: is480 ? 1 : "initial" }}>
                 <LoadingButton
-                  size={is480 ? "small" : "medium"}
+                  fullWidth={is480}
+                  size="small"
                   loading={reviewStatus === "pending"}
                   type="submit"
                   variant="contained"
-                  sx={{ textTransform: "none", borderRadius: "6px" }}
+                  color="primary"
                 >
                   Add review
                 </LoadingButton>
               </motion.div>
-              <motion.div>
+              <motion.div style={{ flex: is480 ? 1 : "initial" }}>
                 <Button
+                  fullWidth={is480}
                   onClick={() => setWriteReview(false)}
-                  size={is480 ? "small" : "medium"}
+                  size="small"
                   variant="outlined"
-                  sx={{ textTransform: "none", borderRadius: "6px" }}
+                  color="primary"
                 >
                   Cancel
                 </Button>
@@ -298,7 +317,7 @@ export const Reviews = ({ productId, averageRating }) => {
       )}
 
       {/* Reviews list */}
-      <Stack rowGap={2}>
+      <Stack rowGap={1.5} sx={{ minWidth: 0 }}>
         {reviews?.map((review) => (
           <ReviewItem
             key={review._id}

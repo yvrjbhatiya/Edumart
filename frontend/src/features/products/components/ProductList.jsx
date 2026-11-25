@@ -69,6 +69,16 @@ const sortOptions = [
 
 const bannerImages = [banner];
 
+const productCardShadowSx = {
+  width: "100% !important",
+  boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
+  borderRadius: "12px",
+  transition: "box-shadow 0.25s ease, transform 0.25s ease",
+  "&:hover": {
+    boxShadow: "rgba(149, 157, 165, 0.35) 0px 10px 28px",
+  },
+};
+
 export const ProductList = () => {
   const [filters, setFilters] = useState({});
   const [page, setPage] = useState(1);
@@ -235,6 +245,8 @@ export const ProductList = () => {
     items,
     shelfRef,
     accentColor = "primary.main",
+    titleColor = "text.primary",
+    subtitleColor = "text.secondary",
   }) => {
     if (!items || items.length === 0) return null;
 
@@ -287,7 +299,7 @@ export const ProductList = () => {
               <Typography
                 variant={is600 ? "h6" : "h5"}
                 fontWeight={700}
-                color="text.primary"
+                color={titleColor}
                 noWrap
               >
                 {title}
@@ -295,7 +307,7 @@ export const ProductList = () => {
               {subtitle && (
                 <Typography
                   variant="body2"
-                  color="text.secondary"
+                  color={subtitleColor}
                   sx={{
                     display: { xs: "none", sm: "block" },
                   }}
@@ -371,9 +383,7 @@ export const ProductList = () => {
               sx={{
                 flexShrink: 0,
                 width: { xs: "240px", sm: "280px", md: "320px" },
-                "& > *": {
-                  width: "100% !important",
-                },
+                "& > *": productCardShadowSx,
               }}
             >
               <ProductCard
@@ -457,7 +467,9 @@ export const ProductList = () => {
                     aria-controls="brand-filters"
                     id="brand-filters"
                   >
-                    <Typography fontWeight={600}>Brands</Typography>
+                    <Typography fontWeight={600} color="primary.main">
+                      Brands
+                    </Typography>
                   </AccordionSummary>
 
                   <AccordionDetails sx={{ p: 0 }}>
@@ -499,7 +511,9 @@ export const ProductList = () => {
                     aria-controls="category-filters"
                     id="category-filters"
                   >
-                    <Typography fontWeight={600}>Category</Typography>
+                    <Typography fontWeight={600} color="primary.main">
+                      Category
+                    </Typography>
                   </AccordionSummary>
 
                   <AccordionDetails sx={{ p: 0 }}>
@@ -556,7 +570,9 @@ export const ProductList = () => {
               icon: <TrendingUpIcon fontSize="small" />,
               items: trendingProducts,
               shelfRef: trendingRef,
-              accentColor: "secondary.main",
+              accentColor: "primary.main",
+              titleColor: "#384959",
+              subtitleColor: "text.secondary",
             })}
 
             <Divider sx={{ mx: { xs: 1.5, sm: 3, md: 4 } }} />
@@ -569,6 +585,8 @@ export const ProductList = () => {
               items: mostViewedProducts,
               shelfRef: mostViewedRef,
               accentColor: "primary.main",
+              titleColor: "#384959",
+              subtitleColor: "text.secondary",
             })}
 
             <Divider sx={{ mx: { xs: 1.5, sm: 3, md: 4 } }} />
@@ -591,7 +609,7 @@ export const ProductList = () => {
                   <Typography
                     variant={is600 ? "h6" : "h5"}
                     fontWeight={700}
-                    color="text.primary"
+                    color={"#384959"}
                   >
                     Explore All Products
                   </Typography>
@@ -670,9 +688,7 @@ export const ProductList = () => {
                     sx={{
                       display: "flex",
                       justifyContent: "center",
-                      "& > *": {
-                        width: "100% !important",
-                      },
+                      "& > *": productCardShadowSx,
                     }}
                   >
                     <ProductCard

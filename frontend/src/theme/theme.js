@@ -23,89 +23,140 @@ export const theme = createTheme({
     },
   },
   typography: {
-    fontFamily: "Blinker, sans-serif",
+    fontFamily: "'Blinker', sans-serif",
     h1: {
-      fontSize: "6rem",
-      "@media (max-width:960px)": {
-        fontSize: "5rem",
-      },
-      "@media (max-width:600px)": {
-        fontSize: "4rem",
-      },
-      "@media (max-width:414px)": {
-        fontSize: "2.5rem",
-      },
+      fontSize: "4.25rem",
+      fontWeight: 700,
+      letterSpacing: "-0.025em",
+      "@media (max-width:960px)": { fontSize: "3.25rem" },
+      "@media (max-width:600px)": { fontSize: "2.4rem" },
+      "@media (max-width:414px)": { fontSize: "1.85rem" },
     },
     h2: {
-      fontSize: "3.75rem",
-      "@media (max-width:960px)": {
-        fontSize: "3rem",
-      },
-      "@media (max-width:662px)": {
-        fontSize: "2.3rem",
-      },
-      "@media (max-width:414px)": {
-        fontSize: "2.2rem",
-      },
+      fontSize: "2.5rem",
+      fontWeight: 700,
+      letterSpacing: "-0.02em",
+      "@media (max-width:960px)": { fontSize: "2rem" },
+      "@media (max-width:600px)": { fontSize: "1.6rem" },
+      "@media (max-width:414px)": { fontSize: "1.35rem" },
     },
     h3: {
-      fontSize: "3rem",
-      "@media (max-width:960px)": {
-        fontSize: "2.4rem",
-      },
-      "@media (max-width:662px)": {
-        fontSize: "2rem",
-      },
-      "@media (max-width:414px)": {
-        fontSize: "1.7rem",
-      },
+      fontSize: "1.95rem",
+      fontWeight: 700,
+      letterSpacing: "-0.015em",
+      "@media (max-width:960px)": { fontSize: "1.6rem" },
+      "@media (max-width:600px)": { fontSize: "1.3rem" },
     },
     h4: {
-      fontSize: "2.125rem",
-      "@media (max-width:960px)": {
-        fontSize: "1.5rem",
-      },
-      "@media (max-width:600px)": {
-        fontSize: "1.25rem",
-      },
+      fontSize: "1.5rem",
+      fontWeight: 600,
+      letterSpacing: "-0.01em",
+      "@media (max-width:960px)": { fontSize: "1.2rem" },
+      "@media (max-width:600px)": { fontSize: "1.05rem" },
     },
     h5: {
-      fontSize: "1.5rem",
-      "@media (max-width:960px)": {
-        fontSize: "1.25rem",
-      },
-      "@media (max-width:600px)": {
-        fontSize: "1.1rem",
-      },
+      fontSize: "1.125rem",
+      fontWeight: 600,
+      "@media (max-width:960px)": { fontSize: "1rem" },
+      "@media (max-width:600px)": { fontSize: "0.92rem" },
     },
     h6: {
-      fontSize: "1.25rem",
-      "@media (max-width:960px)": {
-        fontSize: "1.1rem",
-      },
-      "@media (max-width:600px)": {
-        fontSize: "1rem",
-      },
+      fontSize: "0.95rem",
+      fontWeight: 600,
+      "@media (max-width:960px)": { fontSize: "0.9rem" },
+      "@media (max-width:600px)": { fontSize: "0.85rem" },
     },
     body1: {
-      fontSize: "1rem",
-      "@media (max-width:960px)": {
-        fontSize: "1rem",
-      },
-      "@media (max-width:600px)": {
-        fontSize: ".9rem",
-      },
+      fontSize: "0.88rem",
+      lineHeight: 1.5,
+      "@media (max-width:600px)": { fontSize: "0.82rem" },
     },
     body2: {
-      fontSize: "1rem",
-      "@media (max-width:960px)": {
-        fontSize: "1rem",
+      fontSize: "0.8rem",
+      lineHeight: 1.4,
+      "@media (max-width:600px)": { fontSize: "0.76rem" },
+    },
+  },
+
+  components: {
+    MuiButton: {
+      defaultProps: {
+        size: "small",
       },
-      "@media (max-width:600px)": {
-        fontSize: "1rem",
+      styleOverrides: {
+        root: {
+          textTransform: "none",
+          fontWeight: 600,
+          borderRadius: 10,
+          fontSize: "0.82rem",
+          padding: "5px 12px",
+          boxShadow: "none",
+          "&:hover": {
+            boxShadow: "0 4px 12px rgba(79, 70, 229, 0.18)",
+          },
+        },
+        containedPrimary: {
+          "&:hover": {
+            backgroundColor: "#3730A3",
+          },
+        },
       },
-      "@media (max-width:480px)": {
-        fontSize: ".97rem",
+    },
+    MuiChip: {
+      defaultProps: {
+        size: "small",
+      },
+      styleOverrides: {
+        root: {
+          fontSize: "0.72rem",
+          height: 20,
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          padding: 6,
+        },
+      },
+    },
+    MuiCardMedia: {
+      styleOverrides: {
+        root: {
+          maxHeight: 180,
+          objectFit: "contain",
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundImage: "none",
+        },
+      },
+    },
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: 10,
+          fontSize: "0.88rem",
+          backgroundColor: "#FFFFFF",
+          "&:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#818CF8",
+          },
+        },
+      },
+    },
+    MuiLinearProgress: {
+      styleOverrides: {
+        root: {
+          borderRadius: 999,
+          height: 6,
+          backgroundColor: "#E2E8F0",
+        },
+        bar: {
+          borderRadius: 999,
+        },
       },
     },
   },
