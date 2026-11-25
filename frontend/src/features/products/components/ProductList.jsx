@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Divider,
   FormControl,
@@ -12,7 +13,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProductsAsync,
@@ -29,6 +30,10 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AddIcon from "@mui/icons-material/Add";
 import TuneIcon from "@mui/icons-material/Tune";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import VisibilityOutlinedIcon from "@mui/icons-material/VisibilityOutlined";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { selectBrands } from "../../brands/BrandSlice";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -70,7 +75,9 @@ export const ProductList = () => {
   const [sort, setSort] = useState(null);
   const theme = useTheme();
 
-  const is700 = useMediaQuery(theme.breakpoints.down(700));
+  const trendingRef = useRef(null);
+  const mostViewedRef = useRef(null);
+
   const is600 = useMediaQuery(theme.breakpoints.down(600));
   const is500 = useMediaQuery(theme.breakpoints.down(500));
   const is488 = useMediaQuery(theme.breakpoints.down(488));
@@ -92,6 +99,27 @@ export const ProductList = () => {
   const isProductFilterOpen = useSelector(selectProductIsFilterOpen);
 
   const dispatch = useDispatch();
+
+  const trendingProducts = useMemo(() => {
+    if (!Array.isArray(products) || products.length === 0) return [];
+    return [...products]
+      .sort((a, b) => (b.discountPercentage || 0) - (a.discountPercentage || 0))
+      .slice(0, 8);
+  }, [products]);
+
+  const mostViewedProducts = useMemo(() => {
+    if (!Array.isArray(products) || products.length === 0) return [];
+    return [...products].reverse().slice(0, 8);
+  }, [products]);
+
+  const handleScrollShelf = (ref, direction) => {
+    if (!ref.current) return;
+    const distance = is600 ? 260 : 360;
+    ref.current.scrollBy({
+      left: direction === "left" ? -distance : distance,
+      behavior: "smooth",
+    });
+  };
 
   const handleBrandFilters = (e) => {
     const filterSet = new Set(filters.brand);
@@ -149,7 +177,7 @@ export const ProductList = () => {
       dispatch(createWishlistItemAsync(data));
     } else if (!e.target.checked) {
       const index = wishlistItems.findIndex(
-        (item) => item.product._id === productId
+        (item) => item.product._id === productId,
       );
       dispatch(deleteWishlistItemByIdAsync(wishlistItems[index]._id));
     }
@@ -168,7 +196,7 @@ export const ProductList = () => {
       toast.success("Product removed from wishlist");
     } else if (wishlistItemDeleteStatus === "rejected") {
       toast.error(
-        "Error removing product from wishlist, please try again later"
+        "Error removing product from wishlist, please try again later",
       );
     }
   }, [wishlistItemDeleteStatus]);
@@ -200,6 +228,170 @@ export const ProductList = () => {
     dispatch(toggleFilters());
   };
 
+  const renderShelf = ({
+    title,
+    subtitle,
+    icon,
+    items,
+    shelfRef,
+    accentColor = "primary.main",
+  }) => {
+    if (!items || items.length === 0) return null;
+
+    return (
+      <Stack
+        mx={{ xs: 1.5, sm: 2, md: 2 }}
+        p={{ xs: 1.5, sm: 2.5, md: 3 }}
+        rowGap={2}
+        sx={{
+          minWidth: 0,
+          maxWidth: "100%",
+          backgroundColor: "background.paper",
+          borderColor: "divider",
+          borderRadius: "16px",
+          boxShadow: "0 6px 20px rgba(15, 23, 42, 0.04)",
+        }}
+      >
+        {/* Section Header */}
+        <Stack
+          direction="row"
+          justifyContent="space-between"
+          alignItems="center"
+          gap={1}
+          sx={{ minWidth: 0 }}
+        >
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={1.25}
+            sx={{ minWidth: 0 }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: { xs: 34, sm: 38 },
+                height: { xs: 34, sm: 38 },
+                flexShrink: 0,
+                borderRadius: "10px",
+                backgroundColor: "background.default",
+                color: accentColor,
+                border: "1px solid",
+                borderColor: "divider",
+              }}
+            >
+              {icon}
+            </Box>
+            <Stack sx={{ minWidth: 0 }}>
+              <Typography
+                variant={is600 ? "h6" : "h5"}
+                fontWeight={700}
+                color="text.primary"
+                noWrap
+              >
+                {title}
+              </Typography>
+              {subtitle && (
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    display: { xs: "none", sm: "block" },
+                  }}
+                >
+                  {subtitle}
+                </Typography>
+              )}
+            </Stack>
+          </Stack>
+
+          {/* Scroll Controls */}
+          <Stack direction="row" spacing={0.75} sx={{ flexShrink: 0 }}>
+            <IconButton
+              size="small"
+              onClick={() => handleScrollShelf(shelfRef, "left")}
+              aria-label={`Scroll ${title} left`}
+              sx={{
+                border: "1px solid",
+                borderColor: "divider",
+                backgroundColor: "background.default",
+                color: "text.primary",
+                "&:hover": {
+                  borderColor: "primary.main",
+                  color: "primary.main",
+                },
+              }}
+            >
+              <ArrowBackIosNewIcon fontSize="inherit" />
+            </IconButton>
+            <IconButton
+              size="small"
+              onClick={() => handleScrollShelf(shelfRef, "right")}
+              aria-label={`Scroll ${title} right`}
+              sx={{
+                border: "1px solid",
+                borderColor: "divider",
+                backgroundColor: "background.default",
+                color: "text.primary",
+                "&:hover": {
+                  borderColor: "primary.main",
+                  color: "primary.main",
+                },
+              }}
+            >
+              <ArrowForwardIosIcon fontSize="inherit" />
+            </IconButton>
+          </Stack>
+        </Stack>
+
+        {/* Horizontal Product Strip */}
+        <Stack
+          ref={shelfRef}
+          direction="row"
+          spacing={{ xs: 1.5, sm: 2.5 }}
+          sx={{
+            width: "100%",
+            minWidth: 0,
+            overflowX: "auto",
+            scrollBehavior: "smooth",
+            py: 0.75,
+            "&::-webkit-scrollbar": {
+              height: "6px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "primary.light",
+              borderRadius: "999px",
+            },
+          }}
+        >
+          {items.map((product) => (
+            <Box
+              key={product._id}
+              sx={{
+                flexShrink: 0,
+                width: { xs: "240px", sm: "280px", md: "320px" },
+                "& > *": {
+                  width: "100% !important",
+                },
+              }}
+            >
+              <ProductCard
+                id={product._id}
+                title={product.title}
+                thumbnail={product.thumbnail}
+                brand={product.brand?.name}
+                price={product.price}
+                stockQuantity={product.stockQuantity}
+                handleAddRemoveFromWishlist={handleAddRemoveFromWishlist}
+              />
+            </Box>
+          ))}
+        </Stack>
+      </Stack>
+    );
+  };
+
   return (
     <>
       {productFetchStatus === "pending" ? (
@@ -219,25 +411,23 @@ export const ProductList = () => {
             style={{
               position: "fixed",
               top: 0,
-              backgroundColor: "white",
+              backgroundColor: theme.palette.background.paper,
               height: "100vh",
               padding: "1rem",
-              overflowY: "scroll",
+              overflowY: "auto",
               width: is500 ? "100vw" : "30rem",
+              maxWidth: "100vw",
               zIndex: 1200,
               boxShadow: isProductFilterOpen
-                ? "4px 0 20px rgba(0,0,0,0.12)"
+                ? "4px 0 24px rgba(15, 23, 42, 0.14)"
                 : "none",
             }}
-            variants={{ show: { left: 0 }, hide: { left: -500 } }}
+            variants={{ show: { left: 0 }, hide: { left: "-100%" } }}
             initial={"hide"}
-            transition={{ ease: "easeInOut", duration: 0.5, type: "spring" }}
+            transition={{ ease: "easeInOut", duration: 0.45, type: "spring" }}
             animate={isProductFilterOpen === true ? "show" : "hide"}
           >
-            <Stack
-              mb={"5rem"}
-              sx={{ scrollBehavior: "smooth", overflowY: "scroll" }}
-            >
+            <Stack mb={"4rem"}>
               <IconButton
                 onClick={handleFilterToggle}
                 style={{ position: "absolute", top: 15, right: 15 }}
@@ -254,18 +444,20 @@ export const ProductList = () => {
               <Stack
                 mt={8}
                 sx={{
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: "background.default",
                   padding: ".5rem",
-                  borderRadius: "8px",
+                  borderRadius: "10px",
+                  border: "1px solid",
+                  borderColor: "divider",
                 }}
               >
-                <Accordion>
+                <Accordion elevation={0}>
                   <AccordionSummary
                     expandIcon={<AddIcon />}
                     aria-controls="brand-filters"
                     id="brand-filters"
                   >
-                    <Typography>Brands</Typography>
+                    <Typography fontWeight={600}>Brands</Typography>
                   </AccordionSummary>
 
                   <AccordionDetails sx={{ p: 0 }}>
@@ -279,7 +471,7 @@ export const ProductList = () => {
                         >
                           <FormControlLabel
                             sx={{ ml: 1 }}
-                            control={<Checkbox />}
+                            control={<Checkbox color="primary" />}
                             label={brand.name}
                             value={brand._id}
                           />
@@ -294,18 +486,20 @@ export const ProductList = () => {
               <Stack
                 mt={2}
                 sx={{
-                  backgroundColor: "#f5f5f5",
+                  backgroundColor: "background.default",
                   padding: ".5rem",
-                  borderRadius: "8px",
+                  borderRadius: "10px",
+                  border: "1px solid",
+                  borderColor: "divider",
                 }}
               >
-                <Accordion>
+                <Accordion elevation={0}>
                   <AccordionSummary
                     expandIcon={<AddIcon />}
                     aria-controls="category-filters"
                     id="category-filters"
                   >
-                    <Typography>Category</Typography>
+                    <Typography fontWeight={600}>Category</Typography>
                   </AccordionSummary>
 
                   <AccordionDetails sx={{ p: 0 }}>
@@ -319,7 +513,7 @@ export const ProductList = () => {
                         >
                           <FormControlLabel
                             sx={{ ml: 1 }}
-                            control={<Checkbox />}
+                            control={<Checkbox color="primary" />}
                             label={category.name}
                             value={category._id}
                           />
@@ -332,115 +526,189 @@ export const ProductList = () => {
             </Stack>
           </motion.div>
 
-          <Stack mb={"3rem"}>
-            {/* banners section */}
-            {!is600 && (
-              <Stack
-                sx={{
-                  width: "100%",
-                  margin: "1rem 0",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <ProductBanner images={bannerImages} />
-              </Stack>
-            )}
+          <Stack
+            pb={"3rem"}
+            rowGap={{ xs: 2.5, sm: 3.5, md: 4 }}
+            sx={{
+              width: "100%",
+              maxWidth: "100vw",
+              overflowX: "clip",
+              backgroundColor: "background.default",
+            }}
+          >
+            {/* Banners section (visible on mobile & desktop) */}
+            <Stack
+              sx={{
+                width: "100%",
+                marginTop: { xs: "0.5rem", sm: "1rem" },
+                justifyContent: "center",
+                alignItems: "center",
+                backgroundColor: "#f5f5f5",
+              }}
+            >
+              <ProductBanner images={bannerImages} />
+            </Stack>
 
-            <Divider />
+            {/* Trending Products Section */}
+            {renderShelf({
+              title: "Trending Now",
+              subtitle: "Popular picks & top offers shoppers are grabbing",
+              icon: <TrendingUpIcon fontSize="small" />,
+              items: trendingProducts,
+              shelfRef: trendingRef,
+              accentColor: "secondary.main",
+            })}
 
-            {/* products */}
-            <Stack rowGap={5} mt={is600 ? 2 : 3} id="products-section">
-              {/* Filter & Sort toolbar above products */}
+            <Divider sx={{ mx: { xs: 1.5, sm: 3, md: 4 } }} />
+
+            {/* Most Viewed Section */}
+            {renderShelf({
+              title: "Most Viewed",
+              subtitle: "Frequently explored items across Edumart",
+              icon: <VisibilityOutlinedIcon fontSize="small" />,
+              items: mostViewedProducts,
+              shelfRef: mostViewedRef,
+              accentColor: "primary.main",
+            })}
+
+            <Divider sx={{ mx: { xs: 1.5, sm: 3, md: 4 } }} />
+
+            {/* All Products Catalog */}
+            <Stack
+              rowGap={{ xs: 2.5, sm: 3.5 }}
+              sx={{ minWidth: 0 }}
+              id="products-section"
+            >
+              {/* Section Heading + Filter & Sort Toolbar */}
               <Stack
-                flexDirection={"row"}
-                mx={is488 ? 2 : 4}
+                direction={{ xs: "column", sm: "row" }}
+                mx={{ xs: 1.5, sm: 3, md: 4 }}
                 justifyContent={"space-between"}
-                alignItems={"center"}
-                columnGap={2}
+                alignItems={{ xs: "stretch", sm: "center" }}
+                gap={2}
               >
-                {!loggedInUser?.isAdmin ? (
-                  <Button
-                    variant="outlined"
-                    startIcon={<TuneIcon />}
-                    onClick={handleFilterToggle}
+                <Stack>
+                  <Typography
+                    variant={is600 ? "h6" : "h5"}
+                    fontWeight={700}
+                    color="text.primary"
+                  >
+                    Explore All Products
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {totalResults || products.length} items available
+                  </Typography>
+                </Stack>
+
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  gap={2}
+                  flexWrap="wrap"
+                >
+                  {!loggedInUser?.isAdmin ? (
+                    <Button
+                      variant="outlined"
+                      color="primary"
+                      startIcon={<TuneIcon />}
+                      onClick={handleFilterToggle}
+                      sx={{
+                        px: 2,
+                        py: 0.8,
+                        backgroundColor: "background.paper",
+                      }}
+                    >
+                      Filters
+                    </Button>
+                  ) : null}
+
+                  <Stack
                     sx={{
-                      textTransform: "none",
-                      borderRadius: "8px",
-                      borderColor: "#6a89a7",
-                      color: "#384959",
-                      px: 2,
-                      py: 0.8,
-                      fontWeight: 500,
-                      "&:hover": {
-                        borderColor: "#384959",
-                        backgroundColor: "#f5f5f5",
-                      },
+                      width: { xs: "100%", sm: "12rem" },
+                      minWidth: "9rem",
                     }}
                   >
-                    Filters
-                  </Button>
-                ) : (
-                  <span />
-                )}
-
-                <Stack width={"12rem"}>
-                  <FormControl fullWidth>
-                    <InputLabel id="sort-dropdown">Sort</InputLabel>
-                    <Select
-                      variant="standard"
-                      labelId="sort-dropdown"
-                      label="Sort"
-                      onChange={(e) => setSort(e.target.value)}
-                      value={sort}
-                    >
-                      <MenuItem value={null}>Reset</MenuItem>
-                      {sortOptions.map((option) => (
-                        <MenuItem key={option.name} value={option}>
-                          {option.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                    <FormControl fullWidth>
+                      <InputLabel id="sort-dropdown">Sort</InputLabel>
+                      <Select
+                        variant="standard"
+                        labelId="sort-dropdown"
+                        label="Sort"
+                        onChange={(e) => setSort(e.target.value)}
+                        value={sort}
+                      >
+                        <MenuItem value={null}>Reset</MenuItem>
+                        {sortOptions.map((option) => (
+                          <MenuItem key={option.name} value={option}>
+                            {option.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </Stack>
                 </Stack>
               </Stack>
 
-              {/* product grid */}
+              {/* Product Grid */}
               <Grid
-                gap={is700 ? 2 : 2}
                 container
+                spacing={{ xs: 1.5, sm: 2, md: 2.5 }}
                 justifyContent={"center"}
-                alignContent={"center"}
+                alignItems={"stretch"}
+                px={{ xs: 1.5, sm: 3, md: 4 }}
+                sx={{ width: "100%", margin: 0 }}
               >
                 {products.map((product) => (
-                  <ProductCard
+                  <Grid
+                    item
                     key={product._id}
-                    id={product._id}
-                    title={product.title}
-                    thumbnail={product.thumbnail}
-                    brand={product.brand.name}
-                    price={product.price}
-                    handleAddRemoveFromWishlist={handleAddRemoveFromWishlist}
-                  />
+                    xs={6}
+                    sm={6}
+                    md={4}
+                    lg={3}
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      "& > *": {
+                        width: "100% !important",
+                      },
+                    }}
+                  >
+                    <ProductCard
+                      id={product._id}
+                      title={product.title}
+                      thumbnail={product.thumbnail}
+                      brand={product.brand?.name}
+                      price={product.price}
+                      stockQuantity={product.stockQuantity}
+                      handleAddRemoveFromWishlist={handleAddRemoveFromWishlist}
+                    />
+                  </Grid>
                 ))}
               </Grid>
 
-              {/* pagination */}
+              {/* Pagination */}
               <Stack
-                alignSelf={is488 ? "center" : "flex-end"}
-                mr={is488 ? 0 : 5}
-                rowGap={2}
-                p={is488 ? 1 : 0}
+                alignSelf={{ xs: "center", sm: "flex-end" }}
+                mx={{ xs: 1.5, sm: 3, md: 4 }}
+                rowGap={1.5}
+                pt={1}
               >
                 <Pagination
-                  size={is488 ? "medium" : "large"}
+                  color="primary"
+                  size={is488 ? "small" : "large"}
                   page={page}
                   onChange={(e, page) => setPage(page)}
                   count={Math.ceil(totalResults / ITEMS_PER_PAGE)}
                   variant="outlined"
                   shape="rounded"
                 />
-                <Typography textAlign={"center"}>
+                <Typography
+                  variant="body2"
+                  textAlign={{ xs: "center", sm: "right" }}
+                  color="text.secondary"
+                >
                   Showing {(page - 1) * ITEMS_PER_PAGE + 1} to{" "}
                   {page * ITEMS_PER_PAGE > totalResults
                     ? totalResults

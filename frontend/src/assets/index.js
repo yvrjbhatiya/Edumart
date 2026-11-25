@@ -5,6 +5,8 @@ import noOrdersAnimation from './animations/noOrders.json'
 import emptyWishlistAnimation from './animations/emptyWishlist.json'
 import notFoundPageAnimation from './animations/notFoundPage.json'
 import banner from './images/banner.jpeg'
+import banner2 from './images/banner2.jpg'
+import banner3 from './images/banner3.jpg'
 import googlePlayPng from './images/googlePlay.png'
 import appStorePng from './images/appStore.png'
 import QRCodePng from './images/QRCode.png'
@@ -20,6 +22,8 @@ export {
     emptyWishlistAnimation,
     notFoundPageAnimation,
     banner,
+    banner2,
+    banner3,
     googlePlayPng,
     appStorePng,
     QRCodePng,

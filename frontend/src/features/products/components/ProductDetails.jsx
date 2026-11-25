@@ -534,7 +534,7 @@ export const ProductDetails = () => {
                     backgroundColor: "#f5f5f5",
                     borderRadius: "8px",
                     rowGap: "1.25rem",
-                    marginTop: "5rem"
+                    marginTop: "2rem"
                   }}
                 >
                   <Stack

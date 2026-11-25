@@ -121,6 +121,7 @@ export const Reviews = ({ productId, averageRating }) => {
 
   return (
     <Stack
+
       width={is480 ? "100%" : is840 ? "25rem" : "40rem"}
       maxWidth="100%"
     >
