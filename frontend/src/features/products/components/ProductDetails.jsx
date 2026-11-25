@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   clearSelectedProduct,
   fetchProductByIdAsync,
+  fetchProductsAsync,
   resetProductFetchStatus,
   selectProductFetchStatus,
+  selectProducts,
   selectSelectedProduct,
 } from "../ProductSlice";
 import {
@@ -15,9 +17,11 @@ import {
   Stack,
   Typography,
   useMediaQuery,
-  Button,
   Divider,
+  IconButton,
 } from "@mui/material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {
   addToCartAsync,
   resetCartItemAddStatus,
@@ -32,6 +36,7 @@ import {
   selectReviews,
 } from "../../review/ReviewSlice";
 import { Reviews } from "../../review/components/Reviews";
+import { ProductCard } from "./ProductCard";
 import { toast } from "react-toastify";
 import { MotionConfig, motion } from "framer-motion";
 import FavoriteBorder from "@mui/icons-material/FavoriteBorder";
@@ -54,6 +59,7 @@ import { loadingAnimation } from "../../../assets";
 export const ProductDetails = () => {
   const { id } = useParams();
   const product = useSelector(selectSelectedProduct);
+  const allProducts = useSelector(selectProducts);
   const loggedInUser = useSelector(selectLoggedInUser);
   const dispatch = useDispatch();
   const cartItems = useSelector(selectCartItems);
@@ -61,6 +67,8 @@ export const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const reviews = useSelector(selectReviews);
   const theme = useTheme();
+  const carouselRef = useRef(null);
+
   const is1420 = useMediaQuery(theme.breakpoints.down(1420));
   const is990 = useMediaQuery(theme.breakpoints.down(990));
   const is840 = useMediaQuery(theme.breakpoints.down(840));
@@ -86,26 +94,36 @@ export const ProductDetails = () => {
     0
   );
   const totalReviews = reviews.length;
-  const averageRating = parseInt(Math.ceil(totalReviewRating / totalReviews));
+  const averageRating = totalReviews
+    ? parseInt(Math.ceil(totalReviewRating / totalReviews))
+    : 0;
 
   const wishlistItemAddStatus = useSelector(selectWishlistItemAddStatus);
   const wishlistItemDeleteStatus = useSelector(selectWishlistItemDeleteStatus);
 
   const navigate = useNavigate();
 
+  // Trending products: exclude current item, prioritize higher-rated / stocked items
+  const trendingProducts = (allProducts || [])
+    .filter((item) => item._id !== id)
+    .slice(0, 10);
+
   useEffect(() => {
     window.scrollTo({
       top: 0,
       behavior: "instant",
     });
-  }, []);
-
-  useEffect(() => {
-    if (id) {
-      dispatch(fetchProductByIdAsync(id));
-      dispatch(fetchReviewsByProductIdAsync(id));
-    }
   }, [id]);
+
+ useEffect(() => {
+  if (id) {
+    dispatch(fetchProductByIdAsync(id));
+    dispatch(fetchReviewsByProductIdAsync(id));
+  }
+  if (!allProducts || allProducts.length === 0) {
+    dispatch(fetchProductsAsync({}));
+  }
+}, [id, dispatch]);
 
   useEffect(() => {
     if (cartItemAddStatus === "fulfilled") {
@@ -154,7 +172,7 @@ export const ProductDetails = () => {
       dispatch(resetWishlistItemAddStatus());
       dispatch(resetCartItemAddStatus());
     };
-  }, []);
+  }, [dispatch]);
 
   const handleAddToCart = () => {
     if (!loggedInUser) {
@@ -192,6 +210,15 @@ export const ProductDetails = () => {
     }
   };
 
+  const handleScrollCarousel = (direction) => {
+    if (!carouselRef.current) return;
+    const scrollAmount = 340;
+    carouselRef.current.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
+  };
+
   return (
     <>
       {!(
@@ -205,7 +232,7 @@ export const ProductDetails = () => {
             rowGap: "2rem",
           }}
         >
-          {(productFetchStatus || reviewFetchStatus) === "pending" ? (
+          {productFetchStatus === "pending" || reviewFetchStatus === "pending" ? (
             <Stack
               width={is500 ? "35vh" : "25rem"}
               height={"calc(100vh - 4rem)"}
@@ -215,7 +242,7 @@ export const ProductDetails = () => {
               <Lottie animationData={loadingAnimation} />
             </Stack>
           ) : (
-            <Stack>
+            <Stack alignItems="center" width="100%">
               <Stack
                 width={is480 ? "auto" : is1420 ? "auto" : "85rem"}
                 p={is480 ? 2 : 0}
@@ -228,8 +255,7 @@ export const ProductDetails = () => {
                 columnGap={is990 ? "2rem" : "8rem"}
               >
                 {/* Main product image */}
-                <Stack
-                >
+                <Stack>
                   <div
                     style={{
                       maxWidth: "500px",
@@ -343,7 +369,6 @@ export const ProductDetails = () => {
                                 border: "1px solid #6a89a7",
                                 cursor: "pointer",
                                 fontSize: "1.2rem",
-
                                 color: "primary",
                               }}
                             >
@@ -366,7 +391,6 @@ export const ProductDetails = () => {
                                 border: "1px solid #6a89a7",
                                 cursor: "pointer",
                                 fontSize: "1.2rem",
-
                                 color: "primary",
                               }}
                             >
@@ -384,7 +408,6 @@ export const ProductDetails = () => {
                               outline: "none",
                               border: "none",
                               cursor: "pointer",
-
                               color: "white",
                             }}
                             onClick={() => navigate("/cart")}
@@ -403,7 +426,6 @@ export const ProductDetails = () => {
                               outline: "none",
                               border: "none",
                               cursor: "pointer",
-
                               color: "white",
                             }}
                           >
@@ -479,18 +501,13 @@ export const ProductDetails = () => {
                 </Stack>
               </Stack>
 
-              <Divider
-                sx={{
-                  marginTop: "2rem",
-                  marginBottom: "2rem",
-                }}
-              />
+            
 
+              {/* Reviews section */}
               <Stack
                 width={is1420 ? "auto" : "88rem"}
                 p={is480 ? 2 : 0}
                 sx={{
-                  backgroundColor: "#f5f5f5",
                   padding: "1rem",
                   borderRadius: "8px",
                   height: "fit-content",
@@ -498,6 +515,97 @@ export const ProductDetails = () => {
               >
                 <Reviews productId={id} averageRating={averageRating} />
               </Stack>
+
+               <Divider
+                sx={{
+                  width: is1420 ? "95%" : "88rem",
+                  marginTop: "2rem",
+                  marginBottom: "2rem",
+                }}
+              />
+
+              {/* Trending Products Carousel */}
+              {trendingProducts.length > 0 && (
+                <Stack
+                  width={is1420 ? "100%" : "88rem"}
+                  p={is480 ? 2 : 3}
+                  mt={4}
+                  sx={{
+                    backgroundColor: "#f5f5f5",
+                    borderRadius: "8px",
+                    rowGap: "1.25rem",
+                    marginTop: "5rem"
+                  }}
+                >
+                  <Stack
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Typography
+                      variant="h5"
+                      fontWeight={600}
+                      sx={{ color: "#384959" }}
+                    >
+                      Trending Products
+                    </Typography>
+
+                    <Stack direction="row" spacing={1}>
+                      <IconButton
+                        onClick={() => handleScrollCarousel("left")}
+                        aria-label="Scroll trending products left"
+                        sx={{
+                          border: "1px solid #6a89a7",
+                          backgroundColor: "#fff",
+                        }}
+                      >
+                        <ArrowBackIosNewIcon fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        onClick={() => handleScrollCarousel("right")}
+                        aria-label="Scroll trending products right"
+                        sx={{
+                          border: "1px solid #6a89a7",
+                          backgroundColor: "#fff",
+                        }}
+                      >
+                        <ArrowForwardIosIcon fontSize="small" />
+                      </IconButton>
+                    </Stack>
+                  </Stack>
+
+                  <Stack
+                    ref={carouselRef}
+                    direction="row"
+                    spacing={2.5}
+                    sx={{
+                      overflowX: "auto",
+                      scrollBehavior: "smooth",
+                      pb: 1,
+                      "&::-webkit-scrollbar": {
+                        height: "6px",
+                      },
+                      "&::-webkit-scrollbar-thumb": {
+                        backgroundColor: "#6a89a7",
+                        borderRadius: "999px",
+                      },
+                    }}
+                  >
+                    {trendingProducts.map((item) => (
+                      <Box key={item._id} sx={{ flexShrink: 0 }}>
+                        <ProductCard
+                          id={item._id}
+                          title={item.title}
+                          price={item.price}
+                          thumbnail={item.thumbnail}
+                          brand={item.brand?.name}
+                          stockQuantity={item.stockQuantity}
+                        />
+                      </Box>
+                    ))}
+                  </Stack>
+                </Stack>
+              )}
             </Stack>
           )}
         </Stack>
