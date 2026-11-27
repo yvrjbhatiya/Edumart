@@ -141,7 +141,7 @@ export const Reviews = ({ productId, averageRating }) => {
         <Typography
           variant={is480 ? "h5" : "h4"}
           fontWeight={700}
-          sx={{ color: "#384959", lineHeight: 1.2 }}
+          sx={{ color: "#0F172A", lineHeight: 1.2 }}
         >
           Reviews
         </Typography>

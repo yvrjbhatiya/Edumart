@@ -81,21 +81,69 @@ export const Login = () => {
   return (
     <Stack
       width={"100vw"}
-      height={"100vh"}
+      minHeight={"100vh"}
       flexDirection={"row"}
-      sx={{ overflowY: "hidden" }}
+      sx={{ overflowX: "hidden", backgroundColor: "background.default" }}
     >
       {!is900 && (
         <Stack
-          bgcolor={"rgb(143, 181, 219)"}
           flex={1}
           justifyContent={"center"}
+          alignItems={"center"}
+          sx={{
+            position: "relative",
+            overflow: "hidden",
+            p: 4,
+            background:
+              "linear-gradient(150deg, #312E81 0%, #4F46E5 55%, #7C3AED 100%)",
+            "&::before, &::after": {
+              content: '""',
+              position: "absolute",
+              borderRadius: "50%",
+              pointerEvents: "none",
+            },
+            "&::before": {
+              width: 420,
+              height: 420,
+              top: -140,
+              left: -120,
+              background:
+                "radial-gradient(circle, rgba(255,255,255,0.18) 0%, rgba(255,255,255,0) 70%)",
+            },
+            "&::after": {
+              width: 360,
+              height: 360,
+              bottom: -120,
+              right: -100,
+              background:
+                "radial-gradient(circle, rgba(251,191,36,0.3) 0%, rgba(251,191,36,0) 70%)",
+            },
+          }}
         >
-          <Lottie animationData={ecommerceOutlookAnimation} />
+          <Stack sx={{ width: "100%", maxWidth: 520, position: "relative", zIndex: 1 }}>
+            <Lottie animationData={ecommerceOutlookAnimation} />
+          </Stack>
+          <Typography
+            variant="h4"
+            sx={{ color: "#fff", textAlign: "center", position: "relative", zIndex: 1 }}
+          >
+            Everything a student needs, in one place.
+          </Typography>
+          <Typography
+            sx={{
+              color: "rgba(255,255,255,0.78)",
+              textAlign: "center",
+              mt: 1,
+              position: "relative",
+              zIndex: 1,
+            }}
+          >
+            Books, gear and study essentials, delivered.
+          </Typography>
         </Stack>
       )}
 
-      <Stack flex={1} justifyContent={"center"} alignItems={"center"}>
+      <Stack flex={1} justifyContent={"center"} alignItems={"center"} py={4} px={2}>
         <Stack
           flexDirection={"row"}
           justifyContent={"center"}
@@ -104,8 +152,14 @@ export const Login = () => {
           <Stack rowGap={".4rem"}>
             <Typography
               variant="h1"
-              sx={{ wordBreak: "break-word", color: "#384959" }}
-              fontWeight={600}
+              sx={{
+                wordBreak: "break-word",
+                background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                fontSize: { xs: "2.6rem", sm: "3.4rem" },
+              }}
+              fontWeight={800}
             >
               Edumart
             </Typography>
@@ -122,7 +176,16 @@ export const Login = () => {
         <Stack
           mt={4}
           spacing={2}
-          width={is480 ? "95vw" : "28rem"}
+          width={is480 ? "100%" : "28rem"}
+          maxWidth={"100%"}
+          sx={{
+            backgroundColor: "background.paper",
+            p: { xs: 2.5, sm: 4 },
+            borderRadius: "24px",
+            border: "1px solid",
+            borderColor: "divider",
+            boxShadow: "0 24px 60px rgba(79, 70, 229, 0.12)",
+          }}
           component={"form"}
           noValidate
           onSubmit={handleSubmit(handleLogin)}
@@ -164,7 +227,7 @@ export const Login = () => {
           <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 1 }}>
             <LoadingButton
               fullWidth
-              sx={{ height: "2.5rem" }}
+              sx={{ height: "2.9rem", fontSize: "0.95rem" }}
               loading={status === "pending"}
               type="submit"
               variant="contained"

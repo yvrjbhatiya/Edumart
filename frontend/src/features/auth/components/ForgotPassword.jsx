@@ -85,7 +85,7 @@ export const ForgotPassword = () => {
             onSubmit={handleSubmit(handleForgotPassword)}
           >
             <Stack rowGap={".4rem"}>
-              <Typography variant="h5" fontWeight={600}sx={{ color: '#384959',}}>
+              <Typography variant="h5" fontWeight={600}sx={{ color: '#0F172A',}}>
                 {status === "fullfilled"
                   ? "Email has been sent!"
                   : "Forgot Your Password?"}

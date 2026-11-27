@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Box, Button, IconButton, Stack, Typography } from "@mui/material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import { AnimatePresence, motion } from "framer-motion";
 import { banner, banner2, banner3 } from "../../../assets";
 
@@ -78,19 +80,37 @@ export const ProductBanner = ({ intervalMs = 4500 }) => {
 
   const currentSlide = BANNER_SLIDES[activeIndex];
 
+  const arrowSx = {
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    zIndex: 3,
+    display: { xs: "none", sm: "inline-flex" },
+    color: "#fff",
+    backgroundColor: "rgba(255,255,255,0.14)",
+    border: "1px solid rgba(255,255,255,0.25)",
+    backdropFilter: "blur(10px)",
+    "&:hover": { backgroundColor: "rgba(255,255,255,0.28)" },
+  };
+
   return (
     <Box
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       sx={{
-        width: "100%",
-        height: { xs: "60vh", md: "80vh" },
+        width: { xs: "calc(100% - 24px)", md: "calc(100% - 48px)" },
+        maxWidth: 1400,
+        mx: "auto",
+        height: { xs: "62vh", sm: "68vh", md: "72vh" },
+        minHeight: 380,
+        maxHeight: 640,
         position: "relative",
         overflow: "hidden",
         display: "flex",
         alignItems: "center",
-        justifyContent: "center",
+        borderRadius: { xs: "20px", md: "28px" },
         backgroundColor: "#0F172A",
+        boxShadow: "0 24px 60px rgba(49, 46, 129, 0.25)",
       }}
     >
       {/* Crossfading background layers with subtle Ken Burns zoom */}
@@ -103,11 +123,11 @@ export const ProductBanner = ({ intervalMs = 4500 }) => {
             initial={false}
             animate={{
               opacity: isActive ? 1 : 0,
-              scale: isActive ? 1.03 : 1,
+              scale: isActive ? 1.06 : 1,
             }}
             transition={{
-              opacity: { duration: 0.45, ease: "easeInOut" },
-              scale: { duration: 3, ease: "easeOut" },
+              opacity: { duration: 0.7, ease: "easeInOut" },
+              scale: { duration: 6, ease: "easeOut" },
             }}
             sx={{
               position: "absolute",
@@ -122,61 +142,111 @@ export const ProductBanner = ({ intervalMs = 4500 }) => {
         );
       })}
 
-      {/* Dark gradient overlay for crisp text contrast */}
+      {/* Brand gradient overlay for crisp text contrast */}
       <Box
         sx={{
           position: "absolute",
           inset: 0,
           background:
-            "linear-gradient(180deg, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0.65) 100%)",
+            "linear-gradient(100deg, rgba(30, 27, 75, 0.88) 0%, rgba(49, 46, 129, 0.62) 45%, rgba(15, 23, 42, 0.15) 100%)",
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Decorative glow */}
+      <Box
+        sx={{
+          position: "absolute",
+          width: 380,
+          height: 380,
+          right: -90,
+          top: -90,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle, rgba(167,139,250,0.45) 0%, rgba(167,139,250,0) 70%)",
           zIndex: 1,
           pointerEvents: "none",
         }}
       />
 
       {/* Animated Slide Content */}
-      <Box sx={{ position: "relative", zIndex: 2, width: "100%" }}>
+      <Box
+        sx={{
+          position: "relative",
+          zIndex: 2,
+          width: "100%",
+          px: { xs: 3, sm: 7, md: 10 },
+        }}
+      >
         <AnimatePresence mode="wait">
           <Stack
             key={activeIndex}
             component={motion.div}
-            initial={{ opacity: 0, y: 18 }}
+            initial={{ opacity: 0, y: 22 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -14 }}
             transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-            spacing={3}
+            spacing={{ xs: 2, md: 3 }}
             sx={{
-              margin: "0 auto",
-              color: "primary.contrastText",
-              textAlign: "center",
-              maxWidth: "640px",
-              padding: "0 2.5rem",
-              alignItems: "center",
+              color: "#fff",
+              maxWidth: 620,
+              alignItems: "flex-start",
+              textAlign: "left",
             }}
           >
-            <Typography variant="h2" fontWeight="bold">
+            <Stack
+              direction="row"
+              alignItems="center"
+              spacing={0.75}
+              sx={{
+                px: 1.5,
+                py: 0.6,
+                borderRadius: 999,
+                fontSize: "0.75rem",
+                fontWeight: 700,
+                letterSpacing: "0.06em",
+                textTransform: "uppercase",
+                backgroundColor: "rgba(255,255,255,0.14)",
+                border: "1px solid rgba(255,255,255,0.28)",
+                backdropFilter: "blur(10px)",
+              }}
+            >
+              <AutoAwesomeIcon sx={{ fontSize: 14, color: "secondary.main" }} />
+              <span>Edumart for students</span>
+            </Stack>
+
+            <Typography variant="h2" component="h1" sx={{ textWrap: "balance" }}>
               {currentSlide.title}
             </Typography>
-            <Typography variant="h6">{currentSlide.subtitle}</Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 400,
+                color: "rgba(255,255,255,0.82)",
+                maxWidth: 480,
+                lineHeight: 1.6,
+              }}
+            >
+              {currentSlide.subtitle}
+            </Typography>
+
             <Button
               component={motion.button}
-              whileHover={{ scale: 1.06 }}
+              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              variant="outlined"
+              variant="contained"
               size="medium"
+              endIcon={<ArrowOutwardIcon />}
               sx={{
-                padding: "9px 20px",
-                borderRadius: "1rem",
-                cursor: "pointer",
-                color: "primary.contrastText",
-                width: "auto",
-                maxWidth: "170px",
-                borderColor: "primary.light",
-                backgroundColor: "rgba(15, 23, 42, 0.25)",
-                "&:hover": {
-                  backgroundColor: "primary.main",
-                  borderColor: "primary.main",
-                },
+                mt: 1,
+                px: 3,
+                py: 1.2,
+                borderRadius: 999,
+                color: "#312E81",
+                background: "#fff",
+                boxShadow: "0 12px 30px rgba(0,0,0,0.3)",
+                "&:hover": { background: "#EEF2FF" },
               }}
               onClick={handleScrollDown}
             >
@@ -190,15 +260,7 @@ export const ProductBanner = ({ intervalMs = 4500 }) => {
       <IconButton
         onClick={handlePrevSlide}
         aria-label="Previous slide"
-        sx={{
-          position: "absolute",
-          left: { xs: 8, sm: 20 },
-          zIndex: 3,
-          color: "primary.contrastText",
-          backgroundColor: "rgba(15, 23, 42, 0.45)",
-          backdropFilter: "blur(4px)",
-          "&:hover": { backgroundColor: "rgba(15, 23, 42, 0.75)" },
-        }}
+        sx={{ ...arrowSx, left: { sm: 16, md: 24 } }}
       >
         <ArrowBackIosNewIcon fontSize="small" />
       </IconButton>
@@ -206,15 +268,7 @@ export const ProductBanner = ({ intervalMs = 4500 }) => {
       <IconButton
         onClick={handleNextSlide}
         aria-label="Next slide"
-        sx={{
-          position: "absolute",
-          right: { xs: 8, sm: 20 },
-          zIndex: 3,
-          color: "primary.contrastText",
-          backgroundColor: "rgba(15, 23, 42, 0.45)",
-          backdropFilter: "blur(4px)",
-          "&:hover": { backgroundColor: "rgba(15, 23, 42, 0.75)" },
-        }}
+        sx={{ ...arrowSx, right: { sm: 16, md: 24 } }}
       >
         <ArrowForwardIosIcon fontSize="small" />
       </IconButton>
@@ -226,6 +280,7 @@ export const ProductBanner = ({ intervalMs = 4500 }) => {
         sx={{
           position: "absolute",
           bottom: 18,
+          left: { xs: 24, sm: 56, md: 80 },
           zIndex: 3,
         }}
       >
@@ -234,17 +289,17 @@ export const ProductBanner = ({ intervalMs = 4500 }) => {
             key={slide.title}
             component={motion.div}
             layout
+            role="button"
+            aria-label={`Go to slide ${index + 1}`}
             onClick={() => setActiveIndex(index)}
             sx={{
-              width: index === activeIndex ? 26 : 10,
-              height: 10,
+              width: index === activeIndex ? 28 : 8,
+              height: 8,
               borderRadius: "999px",
               cursor: "pointer",
               transition: "width 0.35s ease, background-color 0.35s ease",
               backgroundColor:
-                index === activeIndex
-                  ? "secondary.main"
-                  : "rgba(255, 255, 255, 0.55)",
+                index === activeIndex ? "secondary.main" : "rgba(255, 255, 255, 0.5)",
             }}
           />
         ))}

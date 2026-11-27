@@ -71,12 +71,6 @@ const bannerImages = [banner];
 
 const productCardShadowSx = {
   width: "100% !important",
-  boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px",
-  borderRadius: "12px",
-  transition: "box-shadow 0.25s ease, transform 0.25s ease",
-  "&:hover": {
-    boxShadow: "rgba(149, 157, 165, 0.35) 0px 10px 28px",
-  },
 };
 
 export const ProductList = () => {
@@ -252,16 +246,15 @@ export const ProductList = () => {
 
     return (
       <Stack
-        mx={{ xs: 1.5, sm: 2, md: 2 }}
-        p={{ xs: 1.5, sm: 2.5, md: 3 }}
+        p={{ xs: 0.5, sm: 1, md: 1.5 }}
         rowGap={2}
         sx={{
           minWidth: 0,
           maxWidth: "100%",
-          backgroundColor: "background.paper",
-          borderColor: "divider",
-          borderRadius: "16px",
-          boxShadow: "0 6px 20px rgba(15, 23, 42, 0.04)",
+          maxWidth: 1400,
+          width: { xs: "calc(100% - 24px)", sm: "calc(100% - 32px)", md: "calc(100% - 48px)" },
+          alignSelf: "center",
+          backgroundColor: "transparent",
         }}
       >
         {/* Section Header */}
@@ -287,10 +280,9 @@ export const ProductList = () => {
                 height: { xs: 34, sm: 38 },
                 flexShrink: 0,
                 borderRadius: "10px",
-                backgroundColor: "background.default",
-                color: accentColor,
-                border: "1px solid",
-                borderColor: "divider",
+                background: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%)",
+                color: "#fff",
+                boxShadow: "0 8px 18px rgba(79,70,229,0.3)",
               }}
             >
               {icon}
@@ -327,7 +319,7 @@ export const ProductList = () => {
               sx={{
                 border: "1px solid",
                 borderColor: "divider",
-                backgroundColor: "background.default",
+                backgroundColor: "background.paper",
                 color: "text.primary",
                 "&:hover": {
                   borderColor: "primary.main",
@@ -344,7 +336,7 @@ export const ProductList = () => {
               sx={{
                 border: "1px solid",
                 borderColor: "divider",
-                backgroundColor: "background.default",
+                backgroundColor: "background.paper",
                 color: "text.primary",
                 "&:hover": {
                   borderColor: "primary.main",
@@ -372,7 +364,7 @@ export const ProductList = () => {
               height: "6px",
             },
             "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "primary.light",
+              backgroundColor: "#CBD5E1",
               borderRadius: "999px",
             },
           }}
@@ -428,8 +420,10 @@ export const ProductList = () => {
               width: is500 ? "100vw" : "30rem",
               maxWidth: "100vw",
               zIndex: 1200,
+              borderTopRightRadius: is500 ? 0 : "24px",
+              borderBottomRightRadius: is500 ? 0 : "24px",
               boxShadow: isProductFilterOpen
-                ? "4px 0 24px rgba(15, 23, 42, 0.14)"
+                ? "8px 0 40px rgba(15, 23, 42, 0.2)"
                 : "none",
             }}
             variants={{ show: { left: 0 }, hide: { left: "-100%" } }}
@@ -456,7 +450,7 @@ export const ProductList = () => {
                 sx={{
                   backgroundColor: "background.default",
                   padding: ".5rem",
-                  borderRadius: "10px",
+                  borderRadius: "14px",
                   border: "1px solid",
                   borderColor: "divider",
                 }}
@@ -500,7 +494,7 @@ export const ProductList = () => {
                 sx={{
                   backgroundColor: "background.default",
                   padding: ".5rem",
-                  borderRadius: "10px",
+                  borderRadius: "14px",
                   border: "1px solid",
                   borderColor: "divider",
                 }}
@@ -557,7 +551,7 @@ export const ProductList = () => {
                 marginTop: { xs: "0.5rem", sm: "1rem" },
                 justifyContent: "center",
                 alignItems: "center",
-                backgroundColor: "#f5f5f5",
+                backgroundColor: "transparent",
               }}
             >
               <ProductBanner images={bannerImages} />
@@ -571,11 +565,11 @@ export const ProductList = () => {
               items: trendingProducts,
               shelfRef: trendingRef,
               accentColor: "primary.main",
-              titleColor: "#384959",
+              titleColor: "text.primary",
               subtitleColor: "text.secondary",
             })}
 
-            <Divider sx={{ mx: { xs: 1.5, sm: 3, md: 4 } }} />
+            <Divider sx={{ mx: { xs: 1.5, sm: 3, md: 4 }, borderColor: "transparent" }} />
 
             {/* Most Viewed Section */}
             {renderShelf({
@@ -585,11 +579,11 @@ export const ProductList = () => {
               items: mostViewedProducts,
               shelfRef: mostViewedRef,
               accentColor: "primary.main",
-              titleColor: "#384959",
+              titleColor: "text.primary",
               subtitleColor: "text.secondary",
             })}
 
-            <Divider sx={{ mx: { xs: 1.5, sm: 3, md: 4 } }} />
+            <Divider sx={{ mx: { xs: 1.5, sm: 3, md: 4 }, borderColor: "transparent" }} />
 
             {/* All Products Catalog */}
             <Stack
@@ -609,7 +603,7 @@ export const ProductList = () => {
                   <Typography
                     variant={is600 ? "h6" : "h5"}
                     fontWeight={700}
-                    color={"#384959"}
+                    color={"text.primary"}
                   >
                     Explore All Products
                   </Typography>
@@ -675,7 +669,7 @@ export const ProductList = () => {
                 justifyContent={"center"}
                 alignItems={"stretch"}
                 px={{ xs: 1.5, sm: 3, md: 4 }}
-                sx={{ width: "100%", margin: 0 }}
+                sx={{ width: "100%", maxWidth: 1400, mx: "auto", margin: "0 auto" }}
               >
                 {products.map((product) => (
                   <Grid

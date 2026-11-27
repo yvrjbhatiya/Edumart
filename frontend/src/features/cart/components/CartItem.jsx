@@ -88,7 +88,7 @@ export const CartItem = ({
           <Typography
             component={Link}
             to={`/product-details/${productId}`}
-            sx={{ textDecoration: "none", color: "#384959" }}
+            sx={{ textDecoration: "none", color: "#0F172A" }}
             variant="h6"
             fontWeight={500}
           >
@@ -125,7 +125,7 @@ export const CartItem = ({
           variant="contained"
           style={{
             padding: ".5rem 1rem",
-            backgroundColor: "#6a89a7",
+            backgroundColor: "#4F46E5",
             borderRadius: "1rem",
             outline: "none",
             border: "none",

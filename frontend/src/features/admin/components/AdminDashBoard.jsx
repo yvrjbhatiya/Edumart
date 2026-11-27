@@ -56,9 +56,6 @@ export const AdminDashBoard = () => {
   const isProductFilterOpen = useSelector(selectProductIsFilterOpen);
   const totalResults = useSelector(selectProductTotalResults);
 
-  const is1200 = useMediaQuery(theme.breakpoints.down(1200));
-  const is800 = useMediaQuery(theme.breakpoints.down(800));
-  const is700 = useMediaQuery(theme.breakpoints.down(700));
   const is600 = useMediaQuery(theme.breakpoints.down(600));
   const is488 = useMediaQuery(theme.breakpoints.down(488));
 
@@ -159,13 +156,14 @@ export const AdminDashBoard = () => {
                 <FormGroup onChange={handleBrandFilters}>
                   {brands?.map((brand) => (
                     <motion.div
+                      key={brand._id}
                       style={{ width: "fit-content" }}
                       whileHover={{ x: 5 }}
                       whileTap={{ scale: 0.9 }}
                     >
                       <FormControlLabel
                         sx={{ ml: 1 }}
-                        control={<Checkbox whileHover={{ scale: 1.1 }} />}
+                        control={<Checkbox />}
                         label={brand.name}
                         value={brand._id}
                       />
@@ -181,8 +179,8 @@ export const AdminDashBoard = () => {
             <Accordion>
               <AccordionSummary
                 expandIcon={<AddIcon />}
-                aria-controls="brand-filters"
-                id="brand-filters"
+                aria-controls="category-filters"
+                id="category-filters"
               >
                 <Typography>Category</Typography>
               </AccordionSummary>
@@ -191,13 +189,14 @@ export const AdminDashBoard = () => {
                 <FormGroup onChange={handleCategoryFilters}>
                   {categories?.map((category) => (
                     <motion.div
+                      key={category._id}
                       style={{ width: "fit-content" }}
                       whileHover={{ x: 5 }}
                       whileTap={{ scale: 0.9 }}
                     >
                       <FormControlLabel
                         sx={{ ml: 1 }}
-                        control={<Checkbox whileHover={{ scale: 1.1 }} />}
+                        control={<Checkbox />}
                         label={category.name}
                         value={category._id}
                       />
@@ -229,11 +228,9 @@ export const AdminDashBoard = () => {
                 onChange={(e) => setSort(e.target.value)}
                 value={sort}
               >
-                <MenuItem bgcolor="text.secondary" value={null}>
-                  Reset
-                </MenuItem>
+                <MenuItem value={null}>Reset</MenuItem>
                 {sortOptions.map((option) => (
-                  <MenuItem key={option} value={option}>
+                  <MenuItem key={option.name} value={option}>
                     {option.name}
                   </MenuItem>
                 ))}
@@ -250,16 +247,38 @@ export const AdminDashBoard = () => {
           alignContent={"center"}
         >
           {products.map((product) => (
+            // One card: product details + admin actions live together inside it
             <Stack
+              key={product._id}
               sx={{
-                backgroundColor: "#f5f5f5",
-                padding: ".8rem",
-                borderRadius: "8px",
+                backgroundColor: "background.paper",
+                borderRadius: "20px",
+                border: "1px solid",
+                borderColor: "divider",
+                overflow: "hidden",
+                transition: "transform .3s ease, box-shadow .3s ease, border-color .3s ease",
+                "&:hover": {
+                  transform: "translateY(-4px)",
+                  borderColor: "#C7D2FE",
+                  boxShadow: "0 18px 40px rgba(79, 70, 229, 0.16)",
+                },
+                // the inner ProductCard has its own border/hover; flatten it so
+                // we don't get a card inside a card
+                "& > *:first-of-type > *": {
+                  border: "none",
+                  borderRadius: 0,
+                  boxShadow: "none",
+                  transform: "none",
+                  "&:hover": {
+                    border: "none",
+                    boxShadow: "none",
+                    transform: "none",
+                  },
+                },
               }}
             >
-              <Stack sx={{ opacity: product.isDeleted ? 0.7 : 1 }}>
+              <Stack sx={{ opacity: product.isDeleted ? 0.6 : 1 }}>
                 <ProductCard
-                  key={product._id}
                   id={product._id}
                   title={product.title}
                   thumbnail={product.thumbnail}
@@ -268,27 +287,24 @@ export const AdminDashBoard = () => {
                   isAdminCard={true}
                 />
               </Stack>
+
+              {/* actions (inside the card) */}
               <Stack
-                paddingLeft={2}
-                paddingRight={2}
-                flexDirection={"row"}
-                justifySelf={"flex-end"}
-                alignSelf={"flex-end"}
-                columnGap={is488 ? 1 : 2}
+                direction="row"
+                columnGap={is488 ? 1 : 1.5}
+                sx={{
+                  px: { xs: 1.5, sm: 2.25 },
+                  pb: { xs: 1.5, sm: 2.25 },
+                  pt: 0.5,
+                }}
               >
                 <Button
                   component={Link}
                   to={`/admin/product-update/${product._id}`}
                   variant="contained"
-                  style={{
-                    padding: "10px 15px",
-                    backgroundColor: "#6a89a7",
-                    borderRadius: "1rem",
-                    outline: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    color: "white",
-                  }}
+                  color="primary"
+                  fullWidth
+                  sx={{ py: 1, borderRadius: 999 }}
                 >
                   Update
                 </Button>
@@ -296,11 +312,9 @@ export const AdminDashBoard = () => {
                   <Button
                     onClick={() => handleProductUnDelete(product._id)}
                     variant="outlined"
-                    style={{
-                      padding: "10px 15px",
-                      borderRadius: "1rem",
-                      cursor: "pointer",
-                    }}
+                    color="primary"
+                    fullWidth
+                    sx={{ py: 1, borderRadius: 999 }}
                   >
                     Un-delete
                   </Button>
@@ -308,10 +322,12 @@ export const AdminDashBoard = () => {
                   <Button
                     onClick={() => handleProductDelete(product._id)}
                     variant="outlined"
-                    style={{
-                      padding: "10px 15px",
-                      borderRadius: "1rem",
-                      cursor: "pointer",
+                    color="error"
+                    fullWidth
+                    sx={{
+                      py: 1,
+                      borderRadius: 999,
+                      "&:hover": { backgroundColor: "#FEF2F2" },
                     }}
                   >
                     Delete

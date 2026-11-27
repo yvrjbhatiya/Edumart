@@ -7,26 +7,31 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Blinker:wght@100;200;300;400;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#4F46E5" />
     <meta
       name="description"
-      content="Web site created using create-react-app"
+      content="Edumart – study gear, books and essentials for students"
     />
     <style>
-      * {
+      *, *::before, *::after { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
+      body {
         margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Blinker", serif;
-        ::-webkit-scrollbar {
-          display: none;
-        
-        }
-      
-
+        font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+        background: #F6F7FB;
+        color: #0F172A;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      img { max-width: 100%; }
+      ::-webkit-scrollbar { width: 8px; height: 8px; }
+      ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 999px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      @media (prefers-reduced-motion: reduce) {
+        * { animation-duration: .01ms !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
       }
     </style>
     <title>Edumart</title>

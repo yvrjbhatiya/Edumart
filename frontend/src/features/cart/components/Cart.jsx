@@ -193,7 +193,7 @@ export const Cart = ({ checkout }) => {
                 fontSize: "1rem",
                 marginTop: "1rem",
                 padding: ".5rem 1rem",
-                backgroundColor: "#6a89a7",
+                backgroundColor: "#4F46E5",
               }}
             >
               Checkout

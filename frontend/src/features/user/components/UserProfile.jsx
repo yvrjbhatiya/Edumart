@@ -143,10 +143,10 @@ export const UserProfile = () => {
               alt={userInfo?.name}
               sx={{ width: 90, height: 90 }} // Increased avatar size
             />
-            <Typography variant="h5" fontWeight={600}sx={{ color: "#384959" }}>
+            <Typography variant="h5" fontWeight={600}sx={{ color: "#0F172A" }}>
               {userInfo?.name}
             </Typography>
-            <Typography variant="body1"sx={{ color: "#384959" }}>{userInfo?.email}</Typography>
+            <Typography variant="body1"sx={{ color: "#0F172A" }}>{userInfo?.email}</Typography>
           </Stack>
 
           {/* Manage Addresses */}
@@ -162,7 +162,7 @@ export const UserProfile = () => {
               borderRadius: "8px",
             }}
           >
-            <Typography variant="body1" fontWeight={400} sx={{ color: "#384959" }}>
+            <Typography variant="body1" fontWeight={400} sx={{ color: "#0F172A" }}>
               Manage addresses
             </Typography>
             <Button
@@ -171,7 +171,7 @@ export const UserProfile = () => {
               variant="contained"
               style={{
                 padding: ".5rem 1rem",
-                backgroundColor: "#6a89a7",
+                backgroundColor: "#4F46E5",
                 borderRadius: "1rem",
                 outline: "none",
                 border: "none",
@@ -290,7 +290,7 @@ export const UserProfile = () => {
                   variant="contained"
                   style={{
                     padding: ".5rem 1rem",
-                    backgroundColor: "#6a89a7",
+                    backgroundColor: "#4F46E5",
                     borderRadius: "1rem",
                     outline: "none",
                     border: "none",
@@ -309,7 +309,7 @@ export const UserProfile = () => {
                     borderRadius: "16px",
                     textTransform: "none",
                     px: 2,
-                    color: "#384959",
+                    color: "#0F172A",
                   }}
                 >
                   Cancel
